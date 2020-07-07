@@ -24,9 +24,9 @@
 
 ### Fila
 
-- implementar usando lista ligada
-- complexidade ao enfileirar: O(1)
-- complexidade ao desenfileirar: O(1)
+- implementar usando lista ligada		- ok!
+- complexidade ao enfileirar: O(1)		- ok!
+- complexidade ao desenfileirar: O(1)		- ok!
 
 ## Arvores e algoritmos de percurso
 
