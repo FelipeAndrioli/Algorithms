@@ -52,15 +52,19 @@ arvore_no *insertTreeElement(arvore_no *raiz, int nelemento) {
 
 	if(temp_balance > 1 && nelemento < raiz->esquerda->elemento) {
 		//esquerda -> esquerda = rotacao direita
+		//rotacao simples
 		return rotacaoDireita(raiz);
 	} else if(temp_balance < -1 && nelemento > raiz->direita->elemento) {
 		//direita -> direita = rotacao esquerda
+		//rotacao simples
 		return rotacaoEsquerda(raiz);
 	} else if(balance > 1 && nelemento > raiz->esquerda->elemento) {
+		//rotacao dupla
 		//esquerda -> direita = rotacao esquerda + rotacao direita
 		raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
 		return rotacaoDireita(raiz);
 	} else if(balance < -1 && nelemento < raiz->direita->elemento) {
+		//rotacao dupla
 		//direita -> esquerda = rotacao direita + rotacao esquerda
 		raiz->direita = rotacaoDireita(raiz->direita);
 		return rotacaoEsquerda(raiz);
@@ -88,8 +92,76 @@ int getBalance(arvore_no *raiz) {
 	return getTreeHeight(raiz->esquerda) - getTreeHeight(raiz->direita);
 }
 
-void *removeTreeElement(arvore *tree, arvore_no *arvore_novo_no) {
-	
+arvore_no *noMenorValor(arvore_no *raiz) {
+	arvore_no *temp_atual = raiz;
+
+	while(temp_atual->esquerda != NULL) {
+		temp_atual = temp_atual->esquerda;
+	}
+
+	return temp_atual;
+}
+
+arvore_no *removeTreeNode(arvore_no *raiz, int r_elemento) {
+	if(raiz == NULL) {
+		return raiz;	
+	} else {
+		if(r_elemento < raiz->elemento) {
+			raiz->esquerda = removeTreeNode(raiz->esquerda, r_elemento);
+		} else if(r_elemento > raiz->elemento) {
+			raiz->direita = removeTreeNode(raiz->direita, r_elemento);
+		} else {
+			if((raiz->esquerda == NULL) || raiz->direita == NULL) {
+				arvore_no *temp = raiz->esquerda ? raiz->esquerda : raiz->direita;
+				if(temp == NULL) {
+					temp = raiz;
+					raiz = NULL;
+				} else {
+					*raiz = *temp;
+					free(temp);
+				}
+			} else {
+				arvore_no temp = noMenorvalor(raiz->direita);
+				raiz->elemento = temp->elemento;
+				raiz->direita = removeTreeNode(raiz->direita, temp->elemento);
+
+			}
+		}
+
+		if(raiz == NULL) {
+			return raiz;
+		}
+
+		raiz->altura = 1 + getMax(getHeight(raiz->esquerda), getHeight(raiz->direita));
+		int balance = getBalance(raiz);
+
+		if(balance > 1 && getBalance(raiz->esquerda) >= 0) {
+			//rotacao simples
+			//esquerda -> esquerda = rotacao direita
+			return rotacaoDireita(raiz);
+		} else if(balance > 1 && getBalance(raiz->esquerda) < 0) {
+			//rotacao dupla
+			//esquerda -> direita = rotacao dupla direita
+			raiz->esquerda = rotacaoDireita(raiz->esquerda);
+			return rotacaoDireita(raiz);
+		} else if(balance < -1 && getBalance(raiz->direita) <= 0) {
+			//rotacao simples
+			//direita -> direita = rotacao simples esquerda
+			return rotacaoEsquerda(raiz);
+		} else if(balance < -1 && getBalance(raiz->direita) > 0) {
+			//rotacao dupla
+			//direita -> esquerda = rotacao dupla esquerda
+			raiz->direita = rotacaoDireita(raiz->direita);
+			return rotacaoEsquerda(raiz);
+		}
+	}
+
+	return raiz;
+}
+
+void *removeTreeElement(arvore *tree, int r_elemento) {
+	arvore_no *no_removido = removeTreeNode(tree->raiz, r_elemento);	
+	printf("\n%d - Elemento removido!\n", no_removido->elemento);
 }
 
 arvore_no *searchTreeNode(arvore_no *raiz, int s_element) {

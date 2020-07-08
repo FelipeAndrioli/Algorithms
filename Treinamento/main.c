@@ -429,9 +429,9 @@ int main(int argc, char *argv[]) {
 								empty_stdin();
 							} else {
 								printf("\nBuscando elemento para ser removido da arvore!\n");
-								arvore_no *rm_no = newTreeNode(elemento);
-								arvore_no *removed_element = removeTreeElement(tree, rm_no);
-								printf("\n%d elemento removido da arvore!", rm_no->elemento);
+								//arvore_no *rm_no = newTreeNode(elemento);
+								//arvore_no *removed_element = removeTreeElement(tree, rm_no);
+								removeTreeNode(tree, elemento);
 							}
 						}
 					}
